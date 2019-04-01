@@ -1,36 +1,26 @@
 const express = require('express');
+const os = require('os');
 const router = express.Router();
 var bodyParser = require('body-parser')
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
-let films = [
-    {
-        id: 0,
-        title: 'The Favourite',
-        director: 'Yorgos Lanthimos',
-        year: '2018'
-    },
-    {
-        id: 1,
-        title: 'Carol',
-        director: 'Todd Haynes',
-        year: '2015'
-    },
-    {
-        id: 2,
-        title: 'Lady Bird',
-        director: 'Greta Gerwig',
-        year: '2017'
-    }
-]
 
 
-router.get('/', (req, res) => { // root page
+router.get('/welcome', (req, res) => { // root page
 	res.send('Welcome to Andy\'s Cine API!\n');
 });
 
-router.get('/:id', (req, res) => {
+router.get('/', (req, res) => {
+	console.log(req.params.id);
+	let all = films;
+	if (!all) {
+		return res.status(404).json({error: "No films"});
+	}
+	return res.json(all);
+})
+
+router.get('/:id', (req, res) => { // retrieve one
     console.log(req.params.id);
     const id = parseInt(req.params.id, 10);
     if (!id) {
@@ -43,7 +33,7 @@ router.get('/:id', (req, res) => {
     return res.json(film);
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', (req, res) => { // delete one
 	console.log(req.params.id);
 	const id = parseInt(req.params.id, 10);
 	if (!id) {
@@ -54,10 +44,10 @@ router.delete('/:id', (req, res) => {
 		return res.status(404).json({error: "No film found"});
 	}
 	films.splice(filmIdx, 1);
-	res.status(204).send();
+	res.status(204).send();	
 });
 
-router.post('/', (req, res) => {
+router.post('/', (req, res) => { // create one
 	const title = req.body.title || '';
 	if (!title.length) {
 		return res.status(400).json({error: 'Empty title'});
@@ -83,7 +73,7 @@ router.post('/', (req, res) => {
 	return res.status(201).json(newFilm);
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:id', (req, res) => { // update one
 	console.log(req.params.id);
 	const id = parseInt(req.params.id, 10);
 	if (!id) {
@@ -111,4 +101,4 @@ router.put('/:id', (req, res) => {
 	return res.status(201).json(updateFilm);
 })
 
-module.exports = router;
+module.exports.router = router;
