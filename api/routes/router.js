@@ -93,39 +93,59 @@ router.delete('/:id', (req, res) => { // delete one
 // 	return res.status(201).json(newFilm);
 // })
 router.post('/', (req, res) => {
-	const id = 0;
 	db.query("select * from cinema", (err, rows) => {
 		if (!err) {
-			console.log("db connection ok");
-			console.log(rows[rows.length-1].title);
-			// id = rows[rows.length-1].id + 1;
-			// console.log("id: " + id);
+			console.log("last element id: " + rows[rows.length-1].id);
+			newid = rows[rows.length-1].id + 1;
+
+			const title = req.body.title || '';
+			if (!title.length) {
+				return res.status(400).json({error: 'Empty title'});
+			}
+			const year = req.body.year || '';
+			if (!year.length) {
+				return res.status(400).json({error: 'Empty year'});
+			}
+			const director = req.body.director || '';
+			if (!director.length) {
+				return res.status(400).json({error: 'Empty director'});
+			}
+			const releaseYear = req.body.year || '';
+			if (!releaseYear.length) {
+				return res.status(400).json({error: 'Empty year'});
+			}
+			const actors = req.body.actors || '';
+			if (!actors.length) {
+				return res.status(400).json({error: 'Empty actors'});
+			}
+			const country = req.body.country || '';
+			if (!country.length) {
+				return res.status(400).json({error: 'Empty country'});
+			}
+			console.log("id: " + newid + ", title: " + title);
+			var sql = "insert into cinema (id, title, releaseYear, director, actors, country) VALUES ?";
+			var values = [
+				[newid, title, year, director, actors, country],
+			];
+			db.query(sql, [values], function (err, result) {
+				if (err) throw err;
+				console.log("Number of records inserted: " + result.affectedRows);
+			});
+		
+			const newFilm = {
+				id: newid,
+				title: title,
+				releaseYear: year,
+				director: director,
+				actors: actors,
+				country: country
+			};
+			return res.json(newFilm);
 		} else {
 			console.log(`query error : ${err}`);
-			return res.json(err);
+			return res.status(400).json({error: "Retrieve Error"});
 		}
-	})
-	// const title = req.body.title || '';
-	// if (!title.length) {
-	// 	return res.status(400).json({error: 'Empty title'});
-	// }
-	// const director = req.body.director || '';
-	// if (!director.length) {
-	// 	return res.status(400).json({error: 'Empty director'});
-	// }
-	// const releaseYear = req.body.year || '';
-	// if (!releaseYear.length) {
-	// 	return res.status(400).json({error: 'Empty year'});
-	// }
-	// const newFilm = {
-	// 	id: id,
-	// 	title: title,
-	// 	releaseYear: releaseYear,
-	// 	director: director,
-	// 	actors: [],
-	// 	country: ""
-	// };
-	// return res.json(newFilm);
+	});
 })
 
 router.put('/:id', (req, res) => { // update one
