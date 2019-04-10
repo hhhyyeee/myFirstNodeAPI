@@ -23,6 +23,18 @@ router.get('/', (req, res) => {
 	});
 })
 
+router.get('/alltitle', (req, res) => { // retrieve all titles
+	db.query("select title from cinema", (err, rows) => {
+		if (!err) {
+			console.log(rows);
+			return res.json(rows);
+		} else {
+			console.log(`query error : ${err}`);
+			return res.json(err);
+		}
+	})
+})
+
 // router.get('/:id', (req, res) => { // retrieve one
 //     console.log(req.params.id);
 //     const id = parseInt(req.params.id, 10);
