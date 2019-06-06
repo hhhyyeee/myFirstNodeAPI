@@ -7,7 +7,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 const db = require('../database/config');
 
 router.get('/welcome', (req, res) => { // root page
-	res.send('Welcome to Andy\'s Cine API!\n');
+	res.send('Welcome to Andy\'s Cine API for Cinema!\n');
 });
 
 router.get('/', (req, res) => { // retrieve every rows

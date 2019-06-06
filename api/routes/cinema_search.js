@@ -24,4 +24,4 @@ router.get('/title/:keyword', (req, res) => {
 	});
 })
 
-module.exports.search_cinema = router;
+module.exports.cinema_search = router;
