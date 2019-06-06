@@ -162,4 +162,4 @@ router.put('/:id', (req, res) => { // update one // not working yet
 	return res.status(201).json(updateFilm);
 })
 
-module.exports.router = router;
+module.exports.cinema = router;
