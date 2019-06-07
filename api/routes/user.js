@@ -2,6 +2,7 @@ const express = require('express');
 const os = require('os');
 const router = express.Router();
 var bodyParser = require('body-parser')
+var bcrypt = require('bcrypt');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 const db = require('../database/config');
@@ -39,8 +40,10 @@ router.get('/:id', (req, res) => { // retrieve one by id
 router.post('/', (req, res) => { // create one
 	db.query("select * from user", (err, rows) => {
 		if (!err) {
-			console.log("last element id: " + rows[rows.length-1].id);
-			newid = rows[rows.length-1].id + 1;
+			if (rows.length != 0) {
+				console.log("last element id: " + rows[rows.length-1].id);
+				newid = rows[rows.length-1].id + 1;
+			} else newid = 1;
 
 			const username = req.body.username || '';
 			if (!username.length) {
@@ -54,22 +57,36 @@ router.post('/', (req, res) => { // create one
 			if (!password.length) {
 				return res.status(400).json({error: 'Empty password'});
 			}
-			const created_at = new Date(); // search for better way!!!!!!!!!!!!!!!!!!!!!!!!!
+			const created_at = new Date(); // search for better way?!?!?!?!?!?!?!?!?!
+
 			console.log("id: " + newid + ", username: " + username);
-			var sql = "insert into user (id, username, email, password, created_at) VALUES ?";
-			var values = [
-				[newid, username, email, password, created_at],
-			];
-			db.query(sql, [values], function (err, result) {
-				if (err) throw err;
-				console.log("Number of records inserted: " + result.affectedRows);
-            });
+			var sql = "insert into user (id, username, email, password, password_salt, created_at) VALUES ?";
+
+			bcrypt.genSalt(10, function(err, salt) {
+				if (err) {
+					console.log(err);
+					return res.status(501).json({error: "Salt generation failed"});
+				}
+				console.log("salt: " + salt);
+				bcrypt.hash(password, salt, function(err, hash){
+					if(err) {
+						console.log(err);
+						return res.status(501).json({error: "Password Hashing failed"});
+					}
+					var value = [[newid, username, email, hash, salt, created_at]];
+					console.log(value);
+					db.query(sql, [value], function(err, result) {
+						if(err) throw err;
+						console.log("Successful");
+						console.log("Number of records inserted: " + result.affectedRows);
+					});
+				});
+			})
             
 			const newUser = {
 				id: newid,
 				username: username,
 				email: email,
-				password: password,
 				created_at: created_at
 			};
 			return res.json(newUser);
