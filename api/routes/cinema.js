@@ -22,17 +22,17 @@ router.get('/', (req, res) => { // retrieve every rows
 	});
 })
 
-// router.get('/alltitle', (req, res) => { // retrieve all titles
-// 	db.query("select title from cinema", (err, rows) => {
-// 		if (!err) {
-// 			console.log(rows);
-// 			return res.json(rows);
-// 		} else {
-// 			console.log(`query error : ${err}`);
-// 			return res.json(err);
-// 		}
-// 	})
-// })
+router.get('/alltitle', (req, res) => { // retrieve all titles
+	db.query("select title from cinema", (err, rows) => {
+		if (!err) {
+			console.log(rows);
+			return res.json(rows);
+		} else {
+			console.log(`query error : ${err}`);
+			return res.json(err);
+		}
+	})
+})
 
 router.get('/:id', (req, res) => { // retrieve one row
 	console.log(req.params.id);
@@ -90,7 +90,7 @@ router.post('/', (req, res) => { // create one
 			if (!director.length) {
 				return res.status(400).json({error: 'Empty director'});
 			}
-			var releaseYear = req.body.year || '';
+			let releaseYear = req.body.year || '';
 			if (!releaseYear.length) {
 				return res.status(400).json({error: 'Empty year'});
 			}
@@ -109,8 +109,8 @@ router.post('/', (req, res) => { // create one
 				return res.status(400).json({error: 'Empty country'});
 			}
 			console.log("id: " + newid + ", title: " + title);
-			var sql = "insert into cinema (id, title, releaseYear, director, actors, country) VALUES ?";
-			var values = [
+			let sql = "insert into cinema (id, title, releaseYear, director, actors, country) VALUES ?";
+			let values = [
 				[newid, title, releaseYear, director, actors, country],
 			];
 			db.query(sql, [values], function (err, result) {
@@ -134,32 +134,42 @@ router.post('/', (req, res) => { // create one
 	});
 })
 
-router.put('/:id', (req, res) => { // update one // not working yet
-	console.log(req.params.id);
-	const id = parseInt(req.params.id, 10);
-	if (!id) {
-		return res.status(400).json({error: "Incorrect id"});
-	}
-	let film = films.filter(film => film.id === id)[0];
-    if (!film) {
-        return res.status(404).json({error: "Unknown film"});
-	}
-	const updateFilm = film;
-	if (req.body) {
-		if (req.body.title) {
-			updateFilm.title = req.body.title;
-		}
-		if (req.body.director) {
-			updateFilm.director = req.body.director;
-		}
-		if (req.body.year) {
-			updateFilm.year = req.body.year;
-		}
-		films.push(updateFilm);
-	} else {
-		return res.status(400).json({error: "Nothing to update"});
-	}
-	return res.status(201).json(updateFilm);
-})
+// router.put('/:id', (req, res) => { // update one // not working yet
+// 	console.log(req.params.id);
+// 	const id = parseInt(req.params.id, 10);
+// 	if (!id) {
+// 		return res.status(400).json({error: "Incorrect id"});
+// 	}
+// 	// let film = films.filter(film => film.id === id)[0];
+// 	// if (!film) {
+//     //     return res.status(404).json({error: "Unknown film"});
+// 	// }
+// 	db.query("select * from cinema where id = " + id, (err, rows) => {
+// 		if (err) return res.status(404).json({error: "Unknown film"});
+// 		console.log(rows);
+// 		let updateFilm = rows;
+// 		if (req.body) {
+// 			if (req.body.title) {
+// 				updateFilm.title = req.body.title;
+// 			}
+// 			if (req.body.director) {
+// 				updateFilm.director = req.body.director;
+// 			}
+// 			if (req.body.year) {
+// 				updateFilm.year = req.body.year;
+// 			}
+// 			if (req.body.actors) {
+// 				updateFilm.actors = req.body.actors;
+// 			}
+// 			if (req.body.country) {
+// 				updateFilm.country = req.body.country;
+// 			}
+// 			console.log(updateFilm);
+// 		} else {
+// 			return res.status(400).json({error: "Nothing to update"});
+// 		}
+// 		return res.status(201).json(updateFilm);
+// 	})
+// })
 
 module.exports.cinema = router;

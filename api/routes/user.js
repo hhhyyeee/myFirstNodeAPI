@@ -11,7 +11,7 @@ router.get('/welcome', (req, res) => { // root page
 	res.send('Welcome to Andy\'s Cine API for Users!\n');
 });
 
-router.get('/', (req, res) => { // retrieve all
+router.get('/', (req, res) => { // retrieve all users
     db.query("select id, username from user", (err, rows) => {
 		if (!err) {
 			console.log(rows);
@@ -23,7 +23,7 @@ router.get('/', (req, res) => { // retrieve all
     });
 })
 
-router.get('/:id', (req, res) => { // retrieve one by id
+router.get('/:id', (req, res) => { // retrieve one user by id
     console.log("id: " + req.params.id);
     const id = parseInt(req.params.id, 10);
     db.query("select id, username from user where id = " + id, (err, rows) => {
@@ -37,7 +37,7 @@ router.get('/:id', (req, res) => { // retrieve one by id
     })
 })
 
-router.post('/', (req, res) => { // create one
+router.post('/', (req, res) => { // create new user
 	db.query("select * from user", (err, rows) => {
 		if (!err) {
 			if (rows.length != 0) {
@@ -57,32 +57,31 @@ router.post('/', (req, res) => { // create one
 			if (!password.length) {
 				return res.status(400).json({error: 'Empty password'});
 			}
-			const created_at = new Date(); // search for better way?!?!?!?!?!?!?!?!?!
+			const created_at = new Date(); // any better way?!?!?!?!?!?!?!?!?!
 
 			console.log("id: " + newid + ", username: " + username);
-			var sql = "insert into user (id, username, email, password, password_salt, created_at) VALUES ?";
-
-			bcrypt.genSalt(10, function(err, salt) {
+			let sql = "insert into user (id, username, email, password, password_salt, created_at) VALUES ?";
+			bcrypt.genSalt(10, function(err, salt) { // bcrypt generates SALT
 				if (err) {
 					console.log(err);
 					return res.status(501).json({error: "Salt generation failed"});
 				}
 				console.log("salt: " + salt);
-				bcrypt.hash(password, salt, function(err, hash){
-					if(err) {
+				bcrypt.hash(password, salt, function(err, hash){ // bcrypt HASHes password with salt
+					if(!err) {
+						let value = [[newid, username, email, hash, salt, created_at]];
+						console.log(value);
+						db.query(sql, [value], function(err, result) {
+							if(err) throw err;
+							console.log("Successful");
+							console.log("Number of records inserted: " + result.affectedRows);
+						});
+					} else {
 						console.log(err);
 						return res.status(501).json({error: "Password Hashing failed"});
 					}
-					var value = [[newid, username, email, hash, salt, created_at]];
-					console.log(value);
-					db.query(sql, [value], function(err, result) {
-						if(err) throw err;
-						console.log("Successful");
-						console.log("Number of records inserted: " + result.affectedRows);
-					});
 				});
-			})
-            
+			})            
 			const newUser = {
 				id: newid,
 				username: username,
@@ -93,6 +92,35 @@ router.post('/', (req, res) => { // create one
 		} else {
 			console.log(`query error : ${err}`);
 			return res.status(400).json({error: "Retrieve Error"});
+		}
+	});
+})
+
+router.delete('/:id', (req, res) => { // delete one user by id
+	console.log(req.params.id);
+	const id = parseInt(req.params.id, 10);
+	db.query("delete from user where id = " + id, (err, rows) => {
+		if (!err) {
+			console.log("user successfully deleted");
+			return res.json(rows);
+		} else {
+			console.log(`query error : ${err}`);
+			return res.json(err);
+		}
+	})
+})
+
+router.put('/username/:id', (req, res) => { // update username
+	console.log(req.params.id);
+	console.log(req.body.username);
+	const id = parseInt(req.params.id, 10);
+	db.query("update user set username = '" + req.body.username + "' where id = " + id, (err, rows) => {
+		if (!err) {
+			console.log(rows);
+			return res.json({message: "username successfully updated"});
+		} else {
+			console.log(`query error : ${err}`);
+			return res.json(err);
 		}
 	});
 })

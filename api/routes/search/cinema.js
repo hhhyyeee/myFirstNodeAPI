@@ -4,7 +4,7 @@ const router = express.Router();
 var bodyParser = require('body-parser')
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
-const db = require('../database/config');
+const db = require('../../database/config');
 
 router.get('/welcome', (req, res) => { // root page
 	res.send('Welcome to Andy\'s Cine API for Searching!\n');
@@ -24,4 +24,4 @@ router.get('/title/:keyword', (req, res) => {
 	});
 })
 
-module.exports.cinema_search = router;
+module.exports.cinema = router;
