@@ -76,7 +76,7 @@ router.delete('/:id', (req, res) => { // delete one row
 	// res.status(204).send();	
 });
 
-router.post('/', (req, res) => { // create one
+router.post('/', (req, res) => { // create one (body param: title, year, director, actors, country)
 	db.query("select * from cinema", (err, rows) => {
 		if (!err) {
 			console.log("last element id: " + rows[rows.length-1].id);

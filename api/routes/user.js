@@ -28,8 +28,12 @@ router.get('/:id', (req, res) => { // retrieve one user by id
     const id = parseInt(req.params.id, 10);
     db.query("select id, username from user where id = " + id, (err, rows) => {
         if (!err) {
-            console.log(rows);
-            return res.json(rows);
+			if (rows.length == 0) {
+				return res.status(204).json({message: "No user with the given id"});
+			} else {
+				console.log(rows);
+				return res.json(rows);
+			}
         } else {
             console.log(`query error : ${err}`);
             return res.status(400).json({error: "Retrieve Error"});
@@ -37,7 +41,7 @@ router.get('/:id', (req, res) => { // retrieve one user by id
     })
 })
 
-router.post('/', (req, res) => { // create new user
+router.post('/', (req, res) => { // create new user (body param: username, email, password)
 	db.query("select * from user", (err, rows) => {
 		if (!err) {
 			if (rows.length != 0) {
@@ -88,7 +92,7 @@ router.post('/', (req, res) => { // create new user
 				email: email,
 				created_at: created_at
 			};
-			return res.json(newUser);
+			return res.status(201).json(newUser);
 		} else {
 			console.log(`query error : ${err}`);
 			return res.status(400).json({error: "Retrieve Error"});
@@ -110,7 +114,7 @@ router.delete('/:id', (req, res) => { // delete one user by id
 	})
 })
 
-router.put('/username/:id', (req, res) => { // update username
+router.put('/username/:id', (req, res) => { // update username (body param: username)
 	console.log(req.params.id);
 	console.log(req.body.username);
 	const id = parseInt(req.params.id, 10);
@@ -123,6 +127,38 @@ router.put('/username/:id', (req, res) => { // update username
 			return res.json(err);
 		}
 	});
+})
+
+router.post('/signin', (req, res) => { // user tries to sign in (body param: id, password)
+	console.log(req.body.id);
+	const id = req.body.id || '';
+	if (!id.length) { // if id is not given
+		return res.status(400).json({error: 'Empty id'});
+	}
+	const pw = req.body.password || '';
+	if (!pw.length) { // if password is not given
+		return res.status(400).json({error: 'Empty password'});
+	}
+	db.query("select id, password, password_salt from user where id = " + id, (err, rows) => {
+		if (!err) {
+			// console.log(rows);
+			if (!rows.length) { // if nothing is found from DB, in other words id has no match in DB
+				return res.status(404).json({error: 'Invalid ID'});
+			}
+			const hash = rows[0].password;
+			// console.log("pw: " + pw + ", hash: " + hash);
+			bcrypt.compare(pw, hash, (err, result) => {
+				if (result) { // result is true when the password is correct
+					return res.status(200).json({message: 'Sign in success'});
+				} else {
+					return res.status(400).json({error: 'Sign in failed'});
+				}
+			});
+		} else {
+			console.log(`query error : ${err}`);
+			return res.json(err);
+		}
+	})
 })
 
 module.exports.user = router;
