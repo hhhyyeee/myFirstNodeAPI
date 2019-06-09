@@ -1,8 +1,8 @@
 const express = require('express');
 const os = require('os');
 const router = express.Router();
-var bodyParser = require('body-parser')
-var bcrypt = require('bcrypt');
+const bodyParser = require('body-parser')
+const bcrypt = require('bcrypt');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 const db = require('../database/config');

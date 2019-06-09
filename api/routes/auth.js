@@ -1,8 +1,9 @@
 const express = require('express');
 const os = require('os');
 const router = express.Router();
-var bodyParser = require('body-parser')
-var bcrypt = require('bcrypt');
+const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
+const morgan = require('morgan');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use((req, res, next) => {
@@ -12,35 +13,6 @@ router.use((req, res, next) => {
     next();
 });
 const db = require('../database/config');
-
-const header = {
-    "typ": "JWT",
-    "alg": "HS256"
-}
-const encodedHeader = new Buffer(JSON.stringify(header))
-                            .toString('base64')
-                            .replace('=', '');
-console.log('header: ', encodedHeader);
-const payload = {
-    "iss": "andrea.com",
-    "exp": "1485270000000",
-    "https://velopert.com/jwt_claims/is_admin": true,
-    "userId": "1",
-    "username": "dominique"
-};
-const encodedPayload = new Buffer(JSON.stringify(payload))
-                            .toString('base64')
-                            .replace('=', '');
-console.log('payload: ', encodedPayload);
-const crypto = require('crypto');
-const signature = crypto.createHmac('sha256', 'secret')
-             .update(encodedHeader + '.' + encodedPayload)
-             .digest('base64')
-             .replace('=', '');
-console.log('signature: ', signature);
-const theresult = encodedHeader + '.' + encodedPayload + '.' + signature;
-console.log('result: ', theresult);
-
 
 router.post('/signin', (req, res) => { // user tries to sign in (body param: id, password)
     console.log(req.body.id);

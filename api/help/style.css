@@ -1,0 +1,16 @@
+body {
+    display: block;
+    width: 80%;
+    margin: auto;
+}
+tr {
+    height: 50px;
+}
+td {
+    text-align: center;
+}
+
+.title {
+    text-align: center;
+    margin: 50px 0 50px 0;
+}
