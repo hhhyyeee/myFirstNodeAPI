@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cinema API descriptions</title>
+        <link rel="stylesheet" type="text/css" href="/public/style.css">
+    </head>
+    <body>
+        <div class="api">
+            <div class="title">
+                <h1>Welcome to Andy's Cine API!</h1><br>
+                <img src="https://cdn.pixabay.com/photo/2017/07/27/15/24/movie-2545676_1280.jpg">
+                <p>This page is a description of this API</p>
+                <p>Made by Hyewon Park (Andy)</p>
+                <p>GitHub: https://github.com/hhhyyeee/myFirstNodeAPI</p>
+                <hr/>
+            </div>
+            <div class="title">
+                <h3>For Cinema</h3>
+                <p>Please use this API as /api/cinema/...</p>
+            </div>
+            <div>
+                <table>
+                    <tr>
+                        <th>endpoint</th>
+                        <th>description</th> 
+                        <th>example</th>
+                    </tr>
+                    <tr>
+                        <td>GET / </td>
+                        <td>Retrieve all cinema</td> 
+                        <td><a>GET /</a></td>
+                    </tr>
+                    <tr>
+                        <td>GET /:id</td>
+                        <td>Retrieve single cinema by id</td> 
+                        <td><a>GET /1</a></td>
+                    </tr>
+                    <tr>
+                        <td>GET /alltitle</td>
+                        <td>Retrieve all cinema titles</td>
+                        <td><a>GET /alltitle</a></td>
+                    </tr>
+                    <tr>
+                        <td>DELETE /:id</td>
+                        <td>Delete single cinema by id</td> 
+                        <td><a>DELETE /1</a></td>
+                    </tr>
+                    <tr>
+                        <td>POST /</td>
+                        <td>Create new cinema<br>title, director, year, actors(string with commas),<br>country fields are required</td> 
+                        <td><a>POST /</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <hr/>
+        <div class="api">
+            <div class="title">
+                <h3>For Users</h3>
+                <p>Please use this API as /api/user/...</p>
+            </div>
+            <div>
+                <table>
+                    <tr>
+                        <th>endpoint</th>
+                        <th>description</th> 
+                        <th>example</th>
+                    </tr>
+                    <tr>
+                        <td>GET / </td>
+                        <td>Retrieve all users</td> 
+                        <td><a>GET /</a></td>
+                    </tr>
+                    <tr>
+                        <td>GET /:id</td>
+                        <td>Retrieve single user by id</td> 
+                        <td><a>GET /1</a></td>
+                    </tr>
+                    <tr>
+                        <td>POST /</td>
+                        <td>Create new user<br>username, email, password fields are required</td> 
+                        <td><a>POST /</a></td>
+                    </tr>
+                    <tr>
+                        <td>DELETE /:id</td>
+                        <td>Delete single user by id</td> 
+                        <td><a>DELETE /</a></td>
+                    </tr>
+                    <tr>
+                        <td>PUT /username/:id</td>
+                        <td>Update username by id</td> 
+                        <td><a>PUT /username/1</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

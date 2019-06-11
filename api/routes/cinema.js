@@ -1,7 +1,7 @@
 const express = require('express');
 const os = require('os');
 const router = express.Router();
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 const db = require('../database/config');
@@ -65,15 +65,6 @@ router.delete('/:id', (req, res) => { // delete one row
 			return res.json(err);
 		}
 	})
-	// if (!id) {
-	// 	return res.status(400).json({error: "Incorrect id"});
-	// }
-	// const filmIdx = films.findIndex(film => film.id === id);
-	// if (filmIdx === -1) {
-	// 	return res.status(404).json({error: "No film found"});
-	// }
-	// films.splice(filmIdx, 1);
-	// res.status(204).send();	
 });
 
 router.post('/', (req, res) => { // create one (body param: title, year, director, actors, country)
@@ -133,43 +124,5 @@ router.post('/', (req, res) => { // create one (body param: title, year, directo
 		}
 	});
 })
-
-// router.put('/:id', (req, res) => { // update one // not working yet
-// 	console.log(req.params.id);
-// 	const id = parseInt(req.params.id, 10);
-// 	if (!id) {
-// 		return res.status(400).json({error: "Incorrect id"});
-// 	}
-// 	// let film = films.filter(film => film.id === id)[0];
-// 	// if (!film) {
-//     //     return res.status(404).json({error: "Unknown film"});
-// 	// }
-// 	db.query("select * from cinema where id = " + id, (err, rows) => {
-// 		if (err) return res.status(404).json({error: "Unknown film"});
-// 		console.log(rows);
-// 		let updateFilm = rows;
-// 		if (req.body) {
-// 			if (req.body.title) {
-// 				updateFilm.title = req.body.title;
-// 			}
-// 			if (req.body.director) {
-// 				updateFilm.director = req.body.director;
-// 			}
-// 			if (req.body.year) {
-// 				updateFilm.year = req.body.year;
-// 			}
-// 			if (req.body.actors) {
-// 				updateFilm.actors = req.body.actors;
-// 			}
-// 			if (req.body.country) {
-// 				updateFilm.country = req.body.country;
-// 			}
-// 			console.log(updateFilm);
-// 		} else {
-// 			return res.status(400).json({error: "Nothing to update"});
-// 		}
-// 		return res.status(201).json(updateFilm);
-// 	})
-// })
 
 module.exports.cinema = router;
