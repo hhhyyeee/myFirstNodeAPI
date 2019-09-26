@@ -17,18 +17,16 @@ router.post('/signin', (req, res) => { // user tries to sign in (body param: id,
 	}
 	db.query("select id, password from user where id = " + id, (err, rows) => {
 		if (!err) {
-			// console.log(rows);
 			if (!rows.length) { // if nothing is found from DB, in other words id has no match in DB
 				return res.status(404).json({error: 'Invalid ID'});
 			}
 			const hash = rows[0].password;
-			// console.log("pw: " + pw + ", hash: " + hash);
 			bcrypt.compare(pw, hash, (err, result) => {
                 if (result) { // result is true when the password is correct
                     console.log(res);
-					return res.status(200).json({message: 'Sign in success'});
+					return res.status(200).json({ message: 'Sign in success' });
 				} else {
-					return res.status(400).json({error: 'Sign in failed'});
+					return res.status(400).json({ error: 'Sign in failed' });
 				}
 			});
 		} else {
@@ -104,7 +102,6 @@ router.delete('/deregister/:id', (req, res) => { // delete one user by id
 router.put('/update/:id', (req, res) => { // update username (body param: username, password)
 	console.log(req.params.id);
 	console.log(req.body.username);
-	// console.log(req.body.password);
 	const id = parseInt(req.params.id, 10);
 	db.query("update user set username = '" + req.body.username + "' where id = " + id, (err, rows) => {
 		if (!err) {
