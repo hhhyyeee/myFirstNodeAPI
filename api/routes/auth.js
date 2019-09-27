@@ -5,25 +5,39 @@ const db = require('../database/config');
 
 const userMethods = require('../modules/user');
 
-router.post('/signin', (req, res) => { // user tries to sign in (body param: id, password)
-    console.log(req.body.id);
-	const id = req.body.id || '';
-	if (!id.length) { // if id is not given
-		return res.status(400).json({error: 'Empty id'});
+router.get('/cookie', (req, res) => {
+	  // Cookies that have not been signed
+	  console.log('Cookies: ', req.cookies);
+
+	  // Cookies that have been signed
+	  console.log('Signed Cookies: ', req.signedCookies);
+})
+
+router.post('/signin', (req, res) => { // user tries to sign in (body param: email, password)
+    console.log(req.body.email);
+	const email = req.body.email || '';
+	if (!email.length) { // if email is not given
+		return res.status(400).json({error: 'Empty email'});
 	}
 	const pw = req.body.password || '';
 	if (!pw.length) { // if password is not given
 		return res.status(400).json({error: 'Empty password'});
 	}
-	db.query("select id, password from user where id = " + id, (err, rows) => {
+	db.query("select email, password from user where email = ?", [email], (err, rows) => {
 		if (!err) {
-			if (!rows.length) { // if nothing is found from DB, in other words id has no match in DB
-				return res.status(404).json({error: 'Invalid ID'});
+			if (!rows.length) { // if nothing is found from DB, in other words email has no match in DB
+				return res.status(404).json({error: 'Invalid Email'});
 			}
 			const hash = rows[0].password;
 			bcrypt.compare(pw, hash, (err, result) => {
                 if (result) { // result is true when the password is correct
-                    console.log(res);
+					console.log(result);
+					
+					res.cookie("email", email , {
+						expires: new Date(Date.now() + 10000), // duration in milliseconds (currently 10 seconds)
+						httpOnly: true
+					});
+
 					return res.status(200).json({ message: 'Sign in success' });
 				} else {
 					return res.status(400).json({ error: 'Sign in failed' });
@@ -99,19 +113,19 @@ router.delete('/deregister/:id', (req, res) => { // delete one user by id
 	})
 })
 
-router.put('/update/:id', (req, res) => { // update username (body param: username, password)
-	console.log(req.params.id);
-	console.log(req.body.username);
-	const id = parseInt(req.params.id, 10);
-	db.query("update user set username = '" + req.body.username + "' where id = " + id, (err, rows) => {
-		if (!err) {
-			console.log(rows);
-			return res.json({message: "username successfully updated"});
-		} else {
-			console.log(`query error : ${err}`);
-			return res.json(err);
-		}
-	});
-})
+// router.put('/update/:id', (req, res) => { // update username (body param: username, password)
+// 	console.log(req.params.id);
+// 	console.log(req.body.username);
+// 	const id = parseInt(req.params.id, 10);
+// 	db.query("update user set username = '" + req.body.username + "' where id = " + id, (err, rows) => {
+// 		if (!err) {
+// 			console.log(rows);
+// 			return res.json({message: "username successfully updated"});
+// 		} else {
+// 			console.log(`query error : ${err}`);
+// 			return res.json(err);
+// 		}
+// 	});
+// })
 
 module.exports.auth = router;

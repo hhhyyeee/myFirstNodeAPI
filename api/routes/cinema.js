@@ -7,9 +7,12 @@ router.get('/welcome', (req, res) => { // root page
 });
 
 router.get('/', (req, res) => { // retrieve every rows
+	if (req.cookies) {
+		console.log("cookie: " + req.cookies);
+	}
 	db.query("select * from cinema", (err, rows) => {
 		if (!err) {
-			console.log(rows);
+			// console.log(rows);
 			return res.json(rows);
 		} else {
 			console.log(`query error : ${err}`);
