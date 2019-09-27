@@ -5,14 +5,6 @@ const db = require('../database/config');
 
 const userMethods = require('../modules/user');
 
-router.get('/cookie', (req, res) => {
-	  // Cookies that have not been signed
-	  console.log('Cookies: ', req.cookies);
-
-	  // Cookies that have been signed
-	  console.log('Signed Cookies: ', req.signedCookies);
-})
-
 router.post('/signin', (req, res) => { // user tries to sign in (body param: email, password)
     console.log(req.body.email);
 	const email = req.body.email || '';
@@ -33,10 +25,13 @@ router.post('/signin', (req, res) => { // user tries to sign in (body param: ema
                 if (result) { // result is true when the password is correct
 					console.log(result);
 					
-					res.cookie("email", email , {
-						expires: new Date(Date.now() + 10000), // duration in milliseconds (currently 10 seconds)
-						httpOnly: true
-					});
+					req.session.email = email;
+					console.log(req.session);
+
+					// res.cookie("email", email , {
+					// 	expires: new Date(Date.now() + 10000), // duration in milliseconds (currently 10 seconds)
+					// 	httpOnly: true
+					// });
 
 					return res.status(200).json({ message: 'Sign in success' });
 				} else {
@@ -48,6 +43,16 @@ router.post('/signin', (req, res) => { // user tries to sign in (body param: ema
 			return res.json(err);
 		}
 	})
+})
+
+router.get("/signout", (req,res) => {
+	req.session.destroy((err) => {
+		if(err) {
+			return res.status(400).json({ error: 'Sign out failed' });
+		} else {
+			return res.status(200).json({ message: 'Sign out success' });
+		}
+	});
 })
 
 router.post('/register', (req, res) => { // create new user (body param: username, email, password)
