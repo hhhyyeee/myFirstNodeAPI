@@ -6,7 +6,7 @@ const db = require('../database/config');
 const userMethods = require('../modules/user');
 
 router.post('/signin', (req, res) => { // user tries to sign in (body param: email, password)
-    console.log(req.body.email);
+	console.log("email: " + req.body.email);
 	const email = req.body.email || '';
 	if (!email.length) { // if email is not given
 		return res.status(400).json({error: 'Empty email'});
@@ -18,6 +18,7 @@ router.post('/signin', (req, res) => { // user tries to sign in (body param: ema
 	db.query("select email, password from user where email = ?", [email], (err, rows) => {
 		if (!err) {
 			if (!rows.length) { // if nothing is found from DB, in other words email has no match in DB
+				console.log("Invalid Email");
 				return res.status(404).json({error: 'Invalid Email'});
 			}
 			const hash = rows[0].password;
@@ -25,21 +26,23 @@ router.post('/signin', (req, res) => { // user tries to sign in (body param: ema
                 if (result) { // result is true when the password is correct
 					console.log(result);
 					
-					req.session.email = email;
+					req.session.user = {
+						"email": email
+					};
 					console.log(req.session);
 
 					// res.cookie("email", email , {
-					// 	expires: new Date(Date.now() + 10000), // duration in milliseconds (currently 10 seconds)
+					// 	expires: new Date(Date.now() + 900000), // duration in milliseconds (currently 15m)
 					// 	httpOnly: true
 					// });
 
-					return res.status(200).json({ message: 'Sign in success' });
+					return res.status(200).json({ success: 'Sign in success', session: req.session });
 				} else {
-					return res.status(400).json({ error: 'Sign in failed' });
+					console.log(`error : ${err}`);
+					return res.status(400).json({ error: 'Wrong Password' });
 				}
 			});
-		} else {
-			console.log(`query error : ${err}`);
+		} else { // almost nothing reaches here
 			return res.json(err);
 		}
 	})
@@ -116,6 +119,11 @@ router.delete('/deregister/:id', (req, res) => { // delete one user by id
 			return res.json(err);
 		}
 	})
+})
+
+router.get('/signedstatus', (req, res) => {
+	if (req.session.email) return res.json({ signin: true });
+	else return res.json({ signin: false });
 })
 
 // router.put('/update/:id', (req, res) => { // update username (body param: username, password)

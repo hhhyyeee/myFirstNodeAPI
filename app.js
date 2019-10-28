@@ -2,10 +2,9 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
+let session = require('express-session');
 app.use('/public', express.static('./api/help'));
-require('dotenv').config()
-
+require('dotenv').config();
 const corsOptions = {
 	origin: 'http://localhost:3000',
 	credentials: true
@@ -22,7 +21,8 @@ app.use(session({
 	resave: false,
 	saveUninitialized: true,
 	cookie: {
-		maxAge: 24 * 60 * 60 * 1000 // cookie duration 24 hours
+		secure: true,
+		maxAge: 60 * 60 * 1000 // cookie duration 1 hour
 	}
 }));
 
@@ -33,8 +33,8 @@ app.use('/api/auth', require('./api/routes/auth').auth);
 app.use('/api/search/cinema', require('./api/routes/search/cinema').cinema);
 
 //
-app.listen(3000, () => {
-	console.log('Example app listening on port 3000!');
+app.listen(3030, () => {
+	console.log('Example app listening on port 3030!');
 });
 app.get("/api", (req, res) => {
 	res.sendFile("cineAPI.html", {root: "api/help"});
