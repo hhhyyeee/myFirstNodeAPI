@@ -24,19 +24,21 @@ router.post('/signin', (req, res) => { // user tries to sign in (body param: ema
 			const hash = rows[0].password;
 			bcrypt.compare(pw, hash, (err, result) => {
                 if (result) { // result is true when the password is correct
-					console.log(result);
-					
-					req.session.user = {
-						"email": email
-					};
-					console.log(req.session);
+					// console.log("right password?: " + result);
+					// req.session.user = {
+					// 	"email": email
+					// };
+					// req.session.save(
+					// 	res.redirect('/')
+					// );
 
-					// res.cookie("email", email , {
-					// 	expires: new Date(Date.now() + 900000), // duration in milliseconds (currently 15m)
-					// 	httpOnly: true
-					// });
+					res.cookie("email", email , {
+						maxAge: 2 * 60 * 1000, // in milliseconds
+						// expires: new Date(Date.now() + 900000), // duration in milliseconds (currently 15m)
+						httpOnly: true
+					});
 
-					return res.status(200).json({ success: 'Sign in success', session: req.session });
+					return res.status(200).json({ success: 'Sign in success' });
 				} else {
 					console.log(`error : ${err}`);
 					return res.status(400).json({ error: 'Wrong Password' });
@@ -122,8 +124,8 @@ router.delete('/deregister/:id', (req, res) => { // delete one user by id
 })
 
 router.get('/signedstatus', (req, res) => {
-	if (req.session.email) return res.json({ signin: true });
-	else return res.json({ signin: false });
+	if (req.cookies.email) return res.json({ email: req.cookies.email, signin: true });
+	else return res.json({ email: false, signin: false });
 })
 
 // router.put('/update/:id', (req, res) => { // update username (body param: username, password)
