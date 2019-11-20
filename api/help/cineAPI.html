@@ -22,32 +22,27 @@
                 <table>
                     <tr>
                         <th>endpoint</th>
-                        <th>description</th> 
+                        <th>description</th>
                         <th>example</th>
                     </tr>
                     <tr>
                         <td>GET / </td>
-                        <td>Retrieve all cinema</td> 
+                        <td>Retrieve all cinema</td>
                         <td><a>GET /</a></td>
                     </tr>
                     <tr>
                         <td>GET /:id</td>
-                        <td>Retrieve single cinema by id</td> 
+                        <td>Retrieve single cinema by id</td>
                         <td><a>GET /1</a></td>
                     </tr>
                     <tr>
-                        <td>GET /alltitle</td>
-                        <td>Retrieve all cinema titles</td>
-                        <td><a>GET /alltitle</a></td>
-                    </tr>
-                    <tr>
                         <td>DELETE /:id</td>
-                        <td>Delete single cinema by id</td> 
+                        <td>Delete single cinema by id</td>
                         <td><a>DELETE /1</a></td>
                     </tr>
                     <tr>
                         <td>POST /</td>
-                        <td>Create new cinema<br>title, director, year, actors(string with commas),<br>country fields are required</td> 
+                        <td>Create new cinema<br>title, director, year, actors(string with commas),<br>country fields are required</td>
                         <td><a>POST /</a></td>
                     </tr>
                 </table>
@@ -63,17 +58,17 @@
                 <table>
                     <tr>
                         <th>endpoint</th>
-                        <th>description</th> 
+                        <th>description</th>
                         <th>example</th>
                     </tr>
                     <tr>
                         <td>GET / </td>
-                        <td>Retrieve all users</td> 
+                        <td>Retrieve all users</td>
                         <td><a>GET /</a></td>
                     </tr>
                     <tr>
                         <td>GET /:id</td>
-                        <td>Retrieve single user by id</td> 
+                        <td>Retrieve single user by id</td>
                         <td><a>GET /1</a></td>
                     </tr>
                 </table>
@@ -94,22 +89,27 @@
                     </tr>
                     <tr>
                         <td>POST /signin</td>
-                        <td>Sign in<br>id, password fields are required</td> 
+                        <td>Sign in<br>id, password fields are required</td>
                         <td><a>POST /signin</a></td>
                     </tr>
                     <tr>
                         <td>POST /register</td>
-                        <td>Create new user<br>username, email, password fields are required</td> 
+                        <td>Create new user<br>username, email, password fields are required</td>
                         <td><a>POST /register</a></td>
                     </tr>
                     <tr>
                         <td>DELETE /:id</td>
-                        <td>Delete single user by id</td> 
+                        <td>Delete single user by id</td>
                         <td><a>DELETE /</a></td>
+                    </tr>
+                    <tr>
+                        <td>POST /signedstatus</td>
+                        <td>Check if a client is signed in</td>
+                        <td><a>POST /signedstatus</a></td>
                     </tr>
                     <!-- <tr>
                         <td>PUT /update/:id</td>
-                        <td>Update user information</td> 
+                        <td>Update user information</td>
                         <td><a>PUT /update/1</a></td>
                     </tr> -->
                 </table>
